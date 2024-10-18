@@ -1,0 +1,184 @@
+/* Tipo exportado */
+typedef struct ponto Ponto;
+
+/* Funções exportadas */
+/* Função cria - Aloca e retorna um ponto com coordenadas (x, y) */
+Ponto* pto_cria(double x, double y);
+
+/* Função libera - Libera a memória de um ponto previamente criado */
+void pto_libera(Ponto* p);
+
+/* Função acessa - Retorna os valores das coordenadas de um ponto */
+void pto_acessa(Ponto* p, double* x, double* y);
+
+/* Função atribui - Atribui novos valores às coordenadas de um ponto */
+void pto_atribui(Ponto* p, double x, double y);
+
+/* Função distancia - Retorna a distância entre dois pontos */
+double pto_distancia(Ponto* p1, Ponto* p2);
+
+/* Função getPonto - Retorna uma string com os valores do ponto no formato (x, y) */
+char* pto_getPonto(Ponto* p);
+
+/* Função exibe - Escreve na tela o ponto no formato (xxx.xx, yyy.yy) */
+void pto_exibe(Ponto* p);
+
+/* Função compara - Recebe dois pontos e retorna:
+   0 se os pontos são iguais,
+   valor negativo se o ponto 1 está mais próximo da origem que o ponto 2,
+   valor positivo se o ponto 2 está mais próximo da origem que o ponto 1 */
+int pto_compara(Ponto* pt1, Ponto* pt2);
+
+/* Função pto_soma - Recebe dois pontos e retorna um novo ponto, com a soma das coordenadas */
+Ponto* pto_soma(Ponto* p1, Ponto* p2);
+
+/* Função atribui - Atribui novos valores às coordenadas de um ponto */
+void pto_atribui(Ponto* p, double x, double y);
+
+/* Funções para atribuir e obter valores das coordenadas */
+void pto_atribuiX(Ponto* p, double x);
+void pto_atribuiY(Ponto* p, double y);
+double pto_obtemX(Ponto* p);
+double pto_obtemY(Ponto* p);
+
+/* Função pto_copia - Cria e retorna uma cópia de um ponto */
+Ponto* pto_copia(Ponto* p);
+
+/* Funções para deslocar as coordenadas de um ponto */
+void pto_desloca(Ponto* p, double dx, double dy);
+void pto_deslocaX(Ponto* p, double dx);
+void pto_deslocaY(Ponto* p, double dy);
+
+#include "ponto.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+/* Implementação TAD: Ponto (x, y) */
+
+/* Definição do tipo exportado */
+struct ponto {
+    double x;
+    double y;
+};
+
+/* Função cria - Aloca e retorna um ponto com coordenadas (x, y) */
+Ponto* pto_cria(double x, double y) {
+    Ponto* p = (Ponto*)malloc(sizeof(Ponto));
+    if (p == NULL) {
+        printf("Memória insuficiente!\n");
+        exit(1);
+    }
+    p->x = x;
+    p->y = y;
+    return p;
+}
+
+/* Função libera - Libera a memória de um ponto previamente criado */
+void pto_libera(Ponto* p) {
+    free(p);
+}
+
+/* Função acessa - Retorna os valores das coordenadas de um ponto */
+void pto_acessa(Ponto* p, double* x, double* y) {
+    *x = p->x;
+    *y = p->y;
+}
+
+/* Função atribui - Atribui novos valores às coordenadas de um ponto */
+void pto_atribui(Ponto* p, double x, double y) {
+    p->x = x;
+    p->y = y;
+}
+
+/* Função distancia - Retorna a distância entre dois pontos */
+double pto_distancia(Ponto* p1, Ponto* p2) {
+    double dx = p2->x - p1->x;
+    double dy = p2->y - p1->y;
+    return sqrt(dx*dx + dy*dy);
+}
+
+/* Função getPonto - Retorna uma string com os valores do ponto no formato (x, y) */
+char* pto_getPonto(Ponto* p) {
+    char* pt;
+    int tam = 20;  // Tamanho estimado suficiente para armazenar a string do ponto
+    pt = (char*)malloc(tam);
+    if (pt == NULL) {
+        printf("Memória insuficiente!\n");
+        exit(1);
+    }
+    snprintf(pt, tam, "( %.2f, %.2f )", p->x, p->y);
+    return pt;
+}
+
+/* Função exibe - Escreve na tela o ponto no formato (xxx.xx, yyy.yy) */
+void pto_exibe(Ponto* p) {
+    printf("(%6.2f, %6.2f)\n", p->x, p->y);
+}
+
+/* Função compara - Recebe dois pontos e retorna:
+   0 se os pontos são iguais,
+   valor negativo se o ponto 1 está mais próximo da origem que o ponto 2,
+   valor positivo se o ponto 2 está mais próximo da origem que o ponto 1 */
+int pto_compara(Ponto* pt1, Ponto* pt2) {
+    Ponto* origem = pto_cria(0, 0);
+    double distpt1_Orig = pto_distancia(pt1, origem);
+    double distpt2_Orig = pto_distancia(pt2, origem);
+    pto_libera(origem);
+    return (distpt1_Orig < distpt2_Orig) ? -1 : (distpt1_Orig > distpt2_Orig) ? 1 : 0;
+}
+
+/* Função pto_soma - Recebe dois pontos e retorna um novo ponto com a soma das coordenadas */
+Ponto* pto_soma(Ponto* p1, Ponto* p2) {
+    double x = p1->x + p2->x;
+    double y = p1->y + p2->y;
+    return pto_cria(x, y);
+}
+
+/* Função atribuiX - Atribui novo valor à coordenada x de um ponto */
+void pto_atribuiX(Ponto* p, double x) {
+    p->x = x;
+}
+
+/* Função atribuiY - Atribui novo valor à coordenada y de um ponto */
+void pto_atribuiY(Ponto* p, double y) {
+    p->y = y;
+}
+
+/* Função obtemX - Obtém o valor da coordenada x de um ponto */
+double pto_obtemX(Ponto* p) {
+    return p->x;
+}
+
+/* Função obtemY - Obtém o valor da coordenada y de um ponto */
+double pto_obtemY(Ponto* p) {
+    return p->y;
+}
+
+/* Função pto_copia - Cria e retorna uma cópia de um ponto */
+Ponto* pto_copia(Ponto* p) {
+    Ponto* pCopia = (Ponto*)malloc(sizeof(Ponto));
+    if (pCopia == NULL) {
+        printf("Memória insuficiente!\n");
+        exit(1);
+    }
+    pCopia->x = p->x;
+    pCopia->y = p->y;
+    return pCopia;
+}
+
+/* Função desloca - Desloca as coordenadas de um ponto pelo valor (dx, dy) */
+void pto_desloca(Ponto* p, double dx, double dy) {
+    p->x += dx;
+    p->y += dy;
+}
+
+/* Função deslocaX - Desloca a coordenada x de um ponto pelo valor dx */
+void pto_deslocaX(Ponto* p, double dx) {
+    p->x += dx;
+}
+
+/* Função deslocaY - Desloca a coordenada y de um ponto pelo valor dy */
+void pto_deslocaY(Ponto* p, double dy) {
+    p->y += dy;
+}
